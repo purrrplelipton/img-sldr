@@ -1,0 +1,29 @@
+footer {
+  width: 100%;
+  padding: 0.3rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  text-align: center;
+
+  p {
+    font-size: 0.8em;
+
+    i {
+      color: $fireball;
+    }
+
+    a {
+      text-decoration: none;
+      color: $tacao;
+      padding: 0.15em 0.4em;
+      transition: background 0.2s ease-in, color 0.25s ease-out;
+
+      &:hover,
+      &:focus {
+        background-color: $cashew-cheese;
+        color: $azulado;
+      }
+    }
+  }
+}

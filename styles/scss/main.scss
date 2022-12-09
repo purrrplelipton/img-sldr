@@ -1,0 +1,6 @@
+@import "./resets/resets", "./modules/config/config", "./modules/body/body.scss";
+
+.card {
+  display: flex;
+  gap: 4vmin;
+}
