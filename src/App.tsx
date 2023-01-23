@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "redaxios";
+import { z } from "zod";
 
 import Header from "./components/header/Header";
 import Spinner from "./components/spinner/Spinner";
@@ -16,53 +17,58 @@ const shufflePhotos = (imgs_arr: []) => {
   return imgs_clone;
 };
 
-function App() {
-  interface stateProps {
-    showLoader: boolean;
-    photosArr: [];
-  }
+const Photo = z.object({
+  id: z.string(),
+  urls: z.object({ regular: z.string() }),
+  description: z.string().nullable(),
+  alt_description: z.nullable(z.string()),
+});
 
-  const [state, updateState] = useState<stateProps>({
-    showLoader: true,
-    photosArr: [],
-  });
+const Response = z.object({
+  total: z.number(),
+  total_pages: z.number(),
+  results: z.array(Photo),
+});
+
+type Response = z.infer<typeof Response>;
+
+function App() {
+  const [photosArr, updatePhotosArr] = useState([]);
+  const [showLoader, updateShowLoader] = useState(true);
 
   const getPhotos = async () => {
     const url = new URL("/search/photos/", "https://api.unsplash.com/");
-    url.searchParams.set("query", "aeriel view");
+    url.searchParams.set("query", "minimal");
     const _options = {
       headers: {
         Authorization: `Client-ID ${import.meta.env.VITE_ACCESS_KEY}`,
       },
     };
 
-    const req = axios.get(url.toString(), _options);
-    const res = await req;
+    const response = await axios.get(url.toString(), _options);
+    const _data = response.data;
+    Response.parse(_data);
 
-    const { total, total_pages, results } = res.data,
-      photos = shufflePhotos(results);
-    updateState((prevState) => ({
-      ...prevState,
-      photosArr: [...prevState.photosArr, photos],
-    }));
+    const shuffledPhotos = shufflePhotos(_data.results);
+
+    updatePhotosArr(shuffledPhotos);
   };
 
   useEffect(() => {
     getPhotos().catch((_reason) => console.log(_reason));
-    updateState((prevState) => ({
-      ...prevState,
-      showLoader: prevState.photosArr.length === 0,
-    }));
-    return () => console.log("gotten images\n", state.photosArr, "\nunmounted");
+
+    updateShowLoader(() => photosArr.length === 0);
+
+    return () => console.log("gotten images\n", photosArr, "\nunmounted");
   }, []);
 
   return (
     <>
       <Header />
       <main>
-        <Spinner showSpinner={state.showLoader} />
+        <Spinner showSpinner={showLoader} />
         <section className={"slides-wrapper"}>
-          {state.photosArr.map((obj: object, i: number) => (
+          {photosArr.map((obj: z.infer<typeof Photo>, i: number) => (
             <Article
               key={obj.id}
               slideIndex={i}

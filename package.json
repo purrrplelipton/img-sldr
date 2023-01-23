@@ -15,7 +15,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
-    "redaxios": "^0.5.1"
+    "redaxios": "^0.5.1",
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",

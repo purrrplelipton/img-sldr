@@ -80,6 +80,11 @@ body {
   display: grid;
 }
 
+.card div button {
+  place-self: flex-end;
+  margin: 2rem;
+}
+
 .heart {
   display: inline-block;
   position: relative;

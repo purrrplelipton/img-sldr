@@ -19,15 +19,25 @@ export default function Article({
 }: {
   slideIndex: number;
   src: string;
-  desc: string;
-  alt_desc: string;
+  desc: string | null;
+  alt_desc: string | null;
 }) {
+  let desc_btn = (
+    <button disabled={!Boolean(desc)}>
+      {desc ? "show slide description" : "slide has no description"}
+    </button>
+  );
+
   return (
     <Slide className={`card card-${slideIndex}`}>
-      <img src={src} alt={alt_desc} loading="lazy" />
+      <img
+        src={src}
+        alt={alt_desc || "alternative description not avaliable at the moment"}
+        loading="lazy"
+      />
       <div>
         <p>{desc}</p>
-        <button type="button">{"idk man"}</button>
+        {desc_btn}
       </div>
     </Slide>
   );
